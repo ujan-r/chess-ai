@@ -1,6 +1,8 @@
 import chess
+import time
 
 from agent import Agent, RandomAgent
+from ui import RemoteRenderer
 
 
 def play(
@@ -11,10 +13,13 @@ def play(
     if board is None:
         board = chess.Board()
 
-    while not board.is_game_over():
-        agent = white if board.turn is chess.WHITE else black
-        move = agent.pick_move(board)
-        board.push(move)
+    with RemoteRenderer(('localhost', 3000)) as renderer:
+        while not board.is_game_over():
+            agent = white if board.turn is chess.WHITE else black
+            move = agent.pick_move(board)
+            board.push(move)
+            renderer.send(move)
+            time.sleep(0.1)
 
     result = board.outcome()
     assert result is not None

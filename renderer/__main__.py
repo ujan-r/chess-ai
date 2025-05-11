@@ -6,6 +6,8 @@ import socket
 import chess
 import pygame as pg
 
+from .comms import MoveReader
+
 
 BLACK = pg.Color(0, 0, 0)
 WHITE = pg.Color(255, 255, 255)
@@ -90,7 +92,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
     conn, addr = s.accept()
     conn.setblocking(False)
-    with conn:
+    with conn, MoveReader(conn) as reader:
         draw_board(board, window)
         running = True
         while running:
@@ -99,17 +101,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 if event.type == pg.QUIT:
                     running = False
                     break
-            try:
-                data = conn.recv(8)
-            except socket.error:
-                # Our socket is non-blocking, so we can just continue if there's
-                # nothing to read.
-                continue
 
-            # The client won't be sending any more data; we're done.
-            if not data:
-                break
-
-            move = chess.Move.from_uci(data.decode())
-            board.push(move)
-            draw_board(board, window)
+            if (move := reader.read()) is not None:
+                board.push(move)
+                draw_board(board, window)

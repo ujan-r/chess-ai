@@ -27,7 +27,7 @@ class MoveReader:
         if len(self.buffer) >= 6:
             data = self.buffer[:6]
             self.buffer = self.buffer[6:]
-            return chess.Move.from_uci(data.decode().strip())
+            return chess.Move.from_uci(data.decode().strip('\0'))
 
     def __enter__(self):
         return self

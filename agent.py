@@ -18,9 +18,10 @@ class RandomAgent(Agent):
         options = list(board.generate_legal_moves())
         return random.choice(options)
 
+
 class MinMaxABAgent(Agent):
-    def pick_move(self, board, depth):
-        return self.minimax(board, depth)[0]
+    def pick_move(self, board):
+        return self.minimax(board, depth=3)[0]
 
     def score_board(self, board):
         score = 0

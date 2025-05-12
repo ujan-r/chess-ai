@@ -1,7 +1,7 @@
 import chess
 import time
 
-from agent import Agent, RandomAgent
+from agent import Agent, MinMaxABAgent, User
 from ui import RemoteRenderer
 
 
@@ -26,8 +26,8 @@ def play(
     return result
 
 
-white = RandomAgent()
-black = RandomAgent()
+white = User()
+black = MinMaxABAgent()
 outcome = play(white, black)
 match outcome.winner:
     case chess.WHITE:

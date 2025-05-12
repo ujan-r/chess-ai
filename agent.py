@@ -19,6 +19,23 @@ class RandomAgent(Agent):
         return random.choice(options)
 
 
+class User(Agent):
+    def pick_move(self, board: chess.Board) -> chess.Move:
+        def parse(string: str) -> chess.Move | None:
+            try:
+                move = board.parse_san(string)
+            except ValueError:
+                return None
+            return move or None
+
+        s = input('move: ')
+        while (move := parse(s)) is None:
+            print('invalid move', s)
+            s = input('move: ')
+
+        return move
+
+
 class MinMaxABAgent(Agent):
     def pick_move(self, board):
         return self.minimax(board, depth=3)[0]
